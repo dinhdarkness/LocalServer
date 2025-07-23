@@ -1,0 +1,58 @@
+{
+    "importBase": "import",
+    "nativeBase": "native",
+    "name": "bundle1975",
+    "deps": [
+        "main"
+    ],
+    "uuids": [
+        "36cf06cc-d3df-4b9d-8ae2-ddc2a07bfdb4",
+        "3e62d079-8bcf-4534-8c50-f955b68bd789",
+        "9dbd4e9f-6d30-4232-b88b-8c4a44733654",
+        "e290aaf5-2923-4cac-8652-e027ae37ea93",
+        "ecd6c177-aa4b-45b9-81a3-a01f37686f5d"
+    ],
+    "paths": {
+        "9dbd4e9f-6d30-4232-b88b-8c4a44733654": [
+            "PersisNodeContainer",
+            "cc.Prefab"
+        ],
+        "3e62d079-8bcf-4534-8c50-f955b68bd789": [
+            "Scenes/ktfGame1975_1",
+            "cc.Prefab"
+        ],
+        "e290aaf5-2923-4cac-8652-e027ae37ea93": [
+            "Scenes/ktfGame1975_2",
+            "cc.Prefab"
+        ],
+        "ecd6c177-aa4b-45b9-81a3-a01f37686f5d": [
+            "Scenes/ktfLoading1975",
+            "cc.Prefab"
+        ],
+        "36cf06cc-d3df-4b9d-8ae2-ddc2a07bfdb4": [
+            "Scenes/ktfLobby1975",
+            "cc.Prefab"
+        ]
+    },
+    "scenes": {},
+    "packs": {},
+    "versions": {
+        "import": [],
+        "native": []
+    },
+    "redirect": [
+        "36cf06cc-d3df-4b9d-8ae2-ddc2a07bfdb4",
+        "0",
+        "3e62d079-8bcf-4534-8c50-f955b68bd789",
+        "0",
+        "9dbd4e9f-6d30-4232-b88b-8c4a44733654",
+        "0",
+        "e290aaf5-2923-4cac-8652-e027ae37ea93",
+        "0",
+        "ecd6c177-aa4b-45b9-81a3-a01f37686f5d",
+        "0"
+    ],
+    "debug": true,
+    "extensionMap": {},
+    "hasPreloadScript": true
+}

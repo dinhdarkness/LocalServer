@@ -1,0 +1,64 @@
+{
+    "importBase": "import",
+    "nativeBase": "native",
+    "name": "resources",
+    "deps": [],
+    "uuids": [
+        "03a5ee920",
+        "0eed8bc3-6f86-4379-97b7-bd1bd8b68842",
+        "7556a7fb-fb45-49b6-8a31-ade6233294e7",
+        "7556a7fb-fb45-49b6-8a31-ade6233294e7@15289",
+        "abfa36e3-97d0-4bfa-86bf-e2aebfe61b1f",
+        "ec577a53-abfb-4287-b1c2-2c101d67397b",
+        "ec577a53-abfb-4287-b1c2-2c101d67397b@6c48a",
+        "ec577a53-abfb-4287-b1c2-2c101d67397b@f9941"
+    ],
+    "paths": {
+        "0eed8bc3-6f86-4379-97b7-bd1bd8b68842": [
+            "wrapper3969mini",
+            "cc.Prefab"
+        ],
+        "abfa36e3-97d0-4bfa-86bf-e2aebfe61b1f": [
+            "jsons/LobbyConfig",
+            "cc.JsonAsset"
+        ],
+        "7556a7fb-fb45-49b6-8a31-ade6233294e7": [
+            "sprites/iconLobby",
+            "cc.SpriteAtlas"
+        ],
+        "7556a7fb-fb45-49b6-8a31-ade6233294e7@15289": [
+            "sprites/iconLobby/1985",
+            "cc.SpriteFrame",
+            1
+        ],
+        "ec577a53-abfb-4287-b1c2-2c101d67397b": [
+            "sprites/iconLobby",
+            "cc.ImageAsset"
+        ],
+        "ec577a53-abfb-4287-b1c2-2c101d67397b@6c48a": [
+            "sprites/iconLobby/texture",
+            "cc.Texture2D",
+            1
+        ],
+        "ec577a53-abfb-4287-b1c2-2c101d67397b@f9941": [
+            "sprites/iconLobby/spriteFrame",
+            "cc.SpriteFrame",
+            1
+        ]
+    },
+    "scenes": {},
+    "packs": {
+        "03a5ee920": [
+            "7556a7fb-fb45-49b6-8a31-ade6233294e7",
+            "7556a7fb-fb45-49b6-8a31-ade6233294e7@15289"
+        ]
+    },
+    "versions": {
+        "import": [],
+        "native": []
+    },
+    "redirect": [],
+    "debug": true,
+    "extensionMap": {},
+    "hasPreloadScript": true
+}

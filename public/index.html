@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cấu Trúc Thư Mục Server</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-folder-tree"></i> Cấu Trúc Thư Mục Server</h1>
+            <div class="controls">
+                <button id="newFolderBtn" class="btn btn-success">
+                    <i class="fas fa-folder-plus"></i> Tạo thư mục
+                </button>
+                <button id="uploadFileBtn" class="btn btn-info">
+                    <i class="fas fa-upload"></i> Upload file
+                </button>
+                <button id="refreshBtn" class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i> Làm mới
+                </button>
+                <button id="expandAllBtn" class="btn btn-secondary">
+                    <i class="fas fa-expand-alt"></i> Mở rộng tất cả
+                </button>
+                <button id="collapseAllBtn" class="btn btn-secondary">
+                    <i class="fas fa-compress-alt"></i> Thu gọn tất cả
+                </button>
+            </div>
+        </header>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <i class="fas fa-folder"></i>
+                <span>Thư mục gốc: <strong id="rootPath">Đang tải...</strong></span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <span>Cập nhật lần cuối: <strong id="lastUpdate">Đang tải...</strong></span>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Đang tải cấu trúc thư mục...</p>
+        </div>
+
+        <div class="error" id="error" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p id="errorMessage">Có lỗi xảy ra khi tải dữ liệu</p>
+        </div>
+
+        <div class="tree-container" id="treeContainer" style="display: none;">
+            <div class="tree" id="tree"></div>
+        </div>
+
+        <!-- Thông tin item được chọn -->
+        <div class="selected-info" id="selectedInfo" style="display: none;">
+            <h3><i class="fas fa-check-circle"></i> Item được chọn:</h3>
+            <div class="selected-content"></div>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-item">
+                <i class="fas fa-folder"></i>
+                <span>Thư mục: <strong id="folderCount">0</strong></span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-file"></i>
+                <span>File: <strong id="fileCount">0</strong></span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-hdd"></i>
+                <span>Tổng dung lượng: <strong id="totalSize">0 KB</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal tạo thư mục -->
+    <div id="newFolderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-folder-plus"></i> Tạo thư mục mới</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="folderPath">Đường dẫn thư mục:</label>
+                    <input type="text" id="folderPath" placeholder="Để trống để tạo ở thư mục gốc">
+                </div>
+                <div class="form-group">
+                    <label for="folderName">Tên thư mục:</label>
+                    <input type="text" id="folderName" placeholder="Nhập tên thư mục" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="createFolderBtn" class="btn btn-success">Tạo thư mục</button>
+                <button class="btn btn-secondary close-modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal upload file -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-upload"></i> Upload file</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="uploadPath">Thư mục đích:</label>
+                    <input type="text" id="uploadPath" placeholder="Để trống để upload vào thư mục gốc">
+                </div>
+                <div class="form-group">
+                    <label for="fileInput">Chọn file:</label>
+                    <input type="file" id="fileInput" multiple>
+                    <div id="fileList" class="file-list"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="uploadBtn" class="btn btn-info">Upload</button>
+                <button class="btn btn-secondary close-modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal đổi tên -->
+    <div id="renameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Đổi tên</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newName">Tên mới:</label>
+                    <input type="text" id="newName" placeholder="Nhập tên mới" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="renameBtn" class="btn btn-warning">Đổi tên</button>
+                <button class="btn btn-secondary close-modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
