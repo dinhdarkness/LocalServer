@@ -95,6 +95,18 @@ npm run https
 ./start-https.sh
 ```
 
+### 6. Script Universal (Khuyến nghị)
+```bash
+# Script tự động tìm Node.js và cài đặt dependencies
+npm run run
+
+# Linux/Mac
+./run-server.sh
+
+# Windows
+run-server.bat
+```
+
 ## 🌐 Truy cập
 
 Sau khi khởi động server, bạn có thể truy cập qua các URL sau:
@@ -239,6 +251,18 @@ sudo npm run domain-https
 
 # Hoặc chạy HTTP nếu SSL không khả dụng
 npm run domain
+```
+
+### Node.js not found
+```bash
+# Sử dụng script universal (tự động tìm Node.js)
+npm run run
+
+# Hoặc cài đặt Node.js
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+nvm install node
+
+# Hoặc tải từ https://nodejs.org/
 ```
 
 ### CORS errors

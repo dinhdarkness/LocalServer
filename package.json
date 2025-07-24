@@ -12,6 +12,7 @@
         "domain-https": "NODE_ENV=production PORT=443 node server.js",
         "https": "./start-https.sh",
         "switch": "./switch-env.sh",
+        "run": "./run-server.sh",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [

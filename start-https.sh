@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Kiểm tra Node.js
+if ! command -v node &> /dev/null; then
+    echo "❌ Node.js không được tìm thấy!"
+    echo "Vui lòng cài đặt Node.js hoặc đảm bảo nó có trong PATH"
+    echo ""
+    echo "Cách khắc phục:"
+    echo "1. Cài đặt Node.js: https://nodejs.org/"
+    echo "2. Hoặc sử dụng nvm: nvm install node"
+    echo "3. Hoặc thêm Node.js vào PATH"
+    exit 1
+fi
+
+echo "✅ Node.js version: $(node --version)"
 echo "============================================================"
 echo "🔒 Local Server - HTTPS Starter"
 echo "============================================================"
