@@ -9,9 +9,10 @@ echo "1. 🏠 Development (localhost:23070)"
 echo "2. 🌐 Domain HTTP (ddarkness.duckdns.org - không port)"
 echo "3. 🔒 Domain HTTPS (ddarkness.duckdns.org - không port)"
 echo "4. 🖥️  VPS (14.225.211.126:23070)"
-echo "5. ⚙️  Tùy chỉnh"
+echo "5. 🔒 VPS HTTPS (14.225.211.126:443)"
+echo "6. ⚙️  Tùy chỉnh"
 echo ""
-read -p "Nhập lựa chọn (1-5): " choice
+read -p "Nhập lựa chọn (1-6): " choice
 
 case $choice in
     1)
@@ -60,6 +61,17 @@ case $choice in
         node server.js
         ;;
     5)
+        echo ""
+        echo "🔒 Chuyển sang môi trường VPS HTTPS..."
+        echo "📍 URL: https://14.225.211.126:443"
+        echo "🔧 Port: 443"
+        echo "🔐 SSL: Let's Encrypt Certificate"
+        echo ""
+        export NODE_ENV=production
+        export PORT=443
+        node server.js
+        ;;
+    6)
         echo ""
         read -p "Nhập port: " custom_port
         read -p "Nhập môi trường (development/production): " custom_env

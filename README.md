@@ -64,6 +64,9 @@ npm run domain
 # Chạy trên domain với port 443 (HTTPS - không cần nhập port)
 npm run domain-https
 
+# Chạy HTTPS với script chuyên dụng
+npm run https
+
 # Hoặc
 NODE_ENV=production node server.js
 ```
@@ -83,6 +86,15 @@ npm run switch
 ./switch-env.sh
 ```
 
+### 5. Chạy HTTPS
+```bash
+# Script HTTPS chuyên dụng
+npm run https
+
+# Hoặc
+./start-https.sh
+```
+
 ## 🌐 Truy cập
 
 Sau khi khởi động server, bạn có thể truy cập qua các URL sau:
@@ -91,6 +103,11 @@ Sau khi khởi động server, bạn có thể truy cập qua các URL sau:
 - **Port 80**: Truy cập trực tiếp `http://ddarkness.duckdns.org` (không cần nhập port)
 - **Port 443**: Truy cập trực tiếp `https://ddarkness.duckdns.org` (không cần nhập port)
 - **Port khác**: Cần nhập port `http://ddarkness.duckdns.org:23070`
+
+### 🔒 SSL Certificate:
+- Sử dụng Let's Encrypt certificate đã cấu hình
+- Tự động detect SSL certificate tại `/etc/letsencrypt/live/ddarkness.duckdns.org/`
+- Hỗ trợ HTTPS cho domain và VPS IP
 
 ### Development
 - **Localhost**: http://localhost:23070
@@ -210,6 +227,18 @@ sudo npm run vps
 
 # Hoặc thay đổi port
 PORT=8080 npm run vps
+```
+
+### SSL Certificate issues
+```bash
+# Kiểm tra SSL certificate
+ls -la /etc/letsencrypt/live/ddarkness.duckdns.org/
+
+# Chạy với quyền admin để đọc SSL files
+sudo npm run domain-https
+
+# Hoặc chạy HTTP nếu SSL không khả dụng
+npm run domain
 ```
 
 ### CORS errors

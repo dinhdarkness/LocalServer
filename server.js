@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const os = require('os');
+const https = require('https');
+const http = require('http');
 const { config, env, isDevelopment } = require('./config');
 
 const app = express();
@@ -22,6 +24,32 @@ function getLocalIP() {
 }
 
 const LOCAL_IP = getLocalIP();
+
+// Cấu hình SSL cho HTTPS
+function getSSLConfig() {
+    if (!config.ssl || !config.ssl.enabled) {
+        return null;
+    }
+    
+    const certPath = config.ssl.certPath;
+    const keyPath = config.ssl.keyPath;
+    
+    try {
+        if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
+            console.log('🔒 SSL certificate đã được tìm thấy');
+            return {
+                cert: fs.readFileSync(certPath),
+                key: fs.readFileSync(keyPath)
+            };
+        } else {
+            console.log('⚠️  SSL certificate không tìm thấy tại:', certPath);
+        }
+    } catch (error) {
+        console.log('⚠️  Không thể đọc SSL certificate:', error.message);
+    }
+    
+    return null;
+}
 
 // Middleware để parse JSON
 app.use(express.json());
@@ -276,29 +304,62 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Khởi động server trên tất cả interfaces
-app.listen(PORT, '0.0.0.0', () => {
-    console.log('='.repeat(60));
-    console.log('🚀 Server đã khởi động thành công!');
-    console.log('='.repeat(60));
-    console.log(`📍 Môi trường: ${env}`);
-    console.log(`🔧 Port: ${PORT}`);
-    console.log(`📁 Thư mục gốc: ${process.cwd()}`);
-    console.log('');
-    console.log('🌐 Các URL có thể truy cập:');
-    console.log(`   • Localhost: http://localhost:${PORT}`);
-    console.log(`   • Local IP: http://${LOCAL_IP}:${PORT}`);
-    console.log(`   • VPS IP: http://14.225.211.126:${config.vpsPort || PORT}`);
+// Khởi động server
+function startServer() {
+    const sslConfig = getSSLConfig();
     
-    // Hiển thị domain URL tùy theo port
-    if (PORT == 80) {
-        console.log(`   • Domain: http://ddarkness.duckdns.org`);
-    } else if (PORT == 443) {
-        console.log(`   • Domain: https://ddarkness.duckdns.org`);
+    if (PORT == 443 && sslConfig) {
+        // Khởi động HTTPS server
+        const httpsServer = https.createServer(sslConfig, app);
+        httpsServer.listen(PORT, '0.0.0.0', () => {
+            console.log('='.repeat(60));
+            console.log('🚀 HTTPS Server đã khởi động thành công!');
+            console.log('='.repeat(60));
+            console.log(`📍 Môi trường: ${env}`);
+            console.log(`🔧 Port: ${PORT}`);
+            console.log(`🔒 SSL: Đã bật`);
+            console.log(`📁 Thư mục gốc: ${process.cwd()}`);
+            console.log('');
+            console.log('🌐 Các URL có thể truy cập:');
+            console.log(`   • Localhost: https://localhost:${PORT}`);
+            console.log(`   • Local IP: https://${LOCAL_IP}:${PORT}`);
+            console.log(`   • VPS IP: https://14.225.211.126:${PORT}`);
+            console.log(`   • Domain: https://ddarkness.duckdns.org`);
+            console.log('');
+            console.log('✅ HTTPS Server sẵn sàng nhận kết nối!');
+            console.log('='.repeat(60));
+        });
     } else {
-        console.log(`   • Domain: http://ddarkness.duckdns.org:${PORT}`);
+        // Khởi động HTTP server
+        const httpServer = http.createServer(app);
+        httpServer.listen(PORT, '0.0.0.0', () => {
+            console.log('='.repeat(60));
+            console.log('🚀 HTTP Server đã khởi động thành công!');
+            console.log('='.repeat(60));
+            console.log(`📍 Môi trường: ${env}`);
+            console.log(`🔧 Port: ${PORT}`);
+            console.log(`🔒 SSL: ${sslConfig ? 'Có sẵn (chạy HTTP)' : 'Không có'}`);
+            console.log(`📁 Thư mục gốc: ${process.cwd()}`);
+            console.log('');
+            console.log('🌐 Các URL có thể truy cập:');
+            console.log(`   • Localhost: http://localhost:${PORT}`);
+            console.log(`   • Local IP: http://${LOCAL_IP}:${PORT}`);
+            console.log(`   • VPS IP: http://14.225.211.126:${config.vpsPort || PORT}`);
+            
+            // Hiển thị domain URL tùy theo port
+            if (PORT == 80) {
+                console.log(`   • Domain: http://ddarkness.duckdns.org`);
+            } else if (PORT == 443 && !sslConfig) {
+                console.log(`   • Domain: http://ddarkness.duckdns.org:${PORT} (SSL không khả dụng)`);
+            } else {
+                console.log(`   • Domain: http://ddarkness.duckdns.org:${PORT}`);
+            }
+            console.log('');
+            console.log('✅ HTTP Server sẵn sàng nhận kết nối!');
+            console.log('='.repeat(60));
+        });
     }
-    console.log('');
-    console.log('✅ Server sẵn sàng nhận kết nối!');
-    console.log('='.repeat(60));
-}); 
+}
+
+// Khởi động server
+startServer(); 

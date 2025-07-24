@@ -28,7 +28,14 @@ const config = {
         ],
         // Cấu hình port cho domain (không cần nhập port)
         domainPort: 80,
+        domainHttpsPort: 443,
         vpsPort: 23070,
+        // Cấu hình SSL
+        ssl: {
+            enabled: true,
+            certPath: '/etc/letsencrypt/live/ddarkness.duckdns.org/fullchain.pem',
+            keyPath: '/etc/letsencrypt/live/ddarkness.duckdns.org/privkey.pem'
+        },
         cors: {
             origin: function(origin, callback) {
                 // Cho phép requests không có origin (mobile apps, etc.)
