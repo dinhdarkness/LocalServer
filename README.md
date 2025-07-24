@@ -34,7 +34,7 @@ allowedHosts: [
     'localhost',
     '127.0.0.1',
     '14.225.211.126',        // VPS IP
-    'ddarkness.duckdns.org'  // Domain
+    'ddarkness.io.vn'  // Domain
 ]
 ```
 
@@ -112,13 +112,13 @@ run-server.bat
 Sau khi khởi động server, bạn có thể truy cập qua các URL sau:
 
 ### 📝 Lưu ý về Domain URLs:
-- **Port 80**: Truy cập trực tiếp `http://ddarkness.duckdns.org` (không cần nhập port)
-- **Port 443**: Truy cập trực tiếp `https://ddarkness.duckdns.org` (không cần nhập port)
-- **Port khác**: Cần nhập port `http://ddarkness.duckdns.org:23070`
+- **Port 80**: Truy cập trực tiếp `http://ddarkness.io.vn` (không cần nhập port)
+- **Port 443**: Truy cập trực tiếp `https://ddarkness.io.vn` (không cần nhập port)
+- **Port khác**: Cần nhập port `http://ddarkness.io.vn:23070`
 
 ### 🔒 SSL Certificate:
 - Sử dụng Let's Encrypt certificate đã cấu hình
-- Tự động detect SSL certificate tại `/etc/letsencrypt/live/ddarkness.duckdns.org/`
+- Tự động detect SSL certificate tại `/etc/letsencrypt/live/ddarkness.io.vn/`
 - Hỗ trợ HTTPS cho domain và VPS IP
 
 ### Development
@@ -127,8 +127,8 @@ Sau khi khởi động server, bạn có thể truy cập qua các URL sau:
 
 ### Production
 - **VPS IP**: http://14.225.211.126:23070
-- **Domain (HTTP)**: http://ddarkness.duckdns.org
-- **Domain (HTTPS)**: https://ddarkness.duckdns.org
+- **Domain (HTTP)**: http://ddarkness.io.vn
+- **Domain (HTTPS)**: https://ddarkness.io.vn
 
 ## 📁 Cấu trúc thư mục
 
@@ -214,8 +214,8 @@ Server sẽ hiển thị thông tin chi tiết khi khởi động:
    • Localhost: http://localhost:23070
    • Local IP: http://192.168.1.100:23070
    • VPS IP: http://14.225.211.126:23070
-   • Domain (HTTP): http://ddarkness.duckdns.org
-   • Domain (HTTPS): https://ddarkness.duckdns.org
+   • Domain (HTTP): http://ddarkness.io.vn
+   • Domain (HTTPS): https://ddarkness.io.vn
 
 ✅ Server sẵn sàng nhận kết nối!
 ============================================================
@@ -244,7 +244,7 @@ PORT=8080 npm run vps
 ### SSL Certificate issues
 ```bash
 # Kiểm tra SSL certificate
-ls -la /etc/letsencrypt/live/ddarkness.duckdns.org/
+ls -la /etc/letsencrypt/live/ddarkness.io.vn/
 
 # Chạy với quyền admin để đọc SSL files
 sudo npm run domain-https

@@ -23,7 +23,7 @@ git pull
 npm install
 echo ""
 echo "🔒 Khởi động HTTPS server cho Domain..."
-echo "📍 URL: https://ddarkness.duckdns.org"
+echo "📍 URL: https://ddarkness.io.vn"
 echo "🔧 Port: 443"
 echo "🔐 SSL: Let's Encrypt Certificate"
 echo ""

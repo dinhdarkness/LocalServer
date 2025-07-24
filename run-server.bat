@@ -79,8 +79,8 @@ if not exist "node_modules" (
 
 echo Chọn môi trường để chạy:
 echo 1. 🏠 Development (localhost:23070)
-echo 2. 🌐 Domain HTTP (ddarkness.duckdns.org - không port)
-echo 3. 🔒 Domain HTTPS (ddarkness.duckdns.org - không port)
+echo 2. 🌐 Domain HTTP (ddarkness.io.vn - không port)
+echo 3. 🔒 Domain HTTPS (ddarkness.io.vn - không port)
 echo 4. 🖥️  VPS (14.225.211.126:23070)
 echo 5. 🔒 VPS HTTPS (14.225.211.126:443)
 echo 6. ⚙️  Tùy chỉnh
