@@ -1,7 +1,7 @@
 // Cấu hình cho các môi trường khác nhau
 const config = {
     development: {
-        port: 23070,
+        port: 3000,
         allowedHosts: [
             'localhost',
             '127.0.0.1',
@@ -19,7 +19,7 @@ const config = {
         }
     },
     production: {
-        port: process.env.PORT || 23070,
+        port: process.env.PORT || 3000,
         allowedHosts: [
             'localhost',
             '127.0.0.1',
@@ -29,7 +29,7 @@ const config = {
         // Cấu hình port cho domain (không cần nhập port)
         domainPort: 80,
         domainHttpsPort: 443,
-        vpsPort: 23070,
+        vpsPort: 3000,
         // Cấu hình SSL
         ssl: {
             enabled: true,
