@@ -26,6 +26,9 @@ const config = {
             '14.225.211.126',
             'ddarkness.duckdns.org'
         ],
+        // Cấu hình port cho domain (không cần nhập port)
+        domainPort: 80,
+        vpsPort: 23070,
         cors: {
             origin: function(origin, callback) {
                 // Cho phép requests không có origin (mobile apps, etc.)

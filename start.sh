@@ -8,10 +8,11 @@ echo "Chọn môi trường để chạy:"
 echo "1. Development (localhost)"
 echo "2. Production (VPS/Domain)"
 echo "3. VPS với port 23070"
-echo "4. Domain với port 80"
-echo "5. Tùy chỉnh port"
+echo "4. Domain với port 80 (không cần nhập port)"
+echo "5. Domain với port 443 (HTTPS)"
+echo "6. Tùy chỉnh port"
 echo ""
-read -p "Nhập lựa chọn (1-5): " choice
+read -p "Nhập lựa chọn (1-6): " choice
 
 case $choice in
     1)
@@ -35,12 +36,19 @@ case $choice in
         ;;
     4)
         echo ""
-        echo "🏃‍♂️ Khởi động server trên Domain..."
+        echo "🏃‍♂️ Khởi động server trên Domain (HTTP - không cần port)..."
         export NODE_ENV=production
         export PORT=80
         node server.js
         ;;
     5)
+        echo ""
+        echo "🏃‍♂️ Khởi động server trên Domain (HTTPS - không cần port)..."
+        export NODE_ENV=production
+        export PORT=443
+        node server.js
+        ;;
+    6)
         echo ""
         read -p "Nhập port tùy chỉnh: " custom_port
         read -p "Nhập môi trường (development/production): " custom_env

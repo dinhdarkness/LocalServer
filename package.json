@@ -9,6 +9,8 @@
         "prod": "NODE_ENV=production node server.js",
         "vps": "NODE_ENV=production PORT=23070 node server.js",
         "domain": "NODE_ENV=production PORT=80 node server.js",
+        "domain-https": "NODE_ENV=production PORT=443 node server.js",
+        "switch": "./switch-env.sh",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [

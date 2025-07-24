@@ -288,8 +288,16 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log('🌐 Các URL có thể truy cập:');
     console.log(`   • Localhost: http://localhost:${PORT}`);
     console.log(`   • Local IP: http://${LOCAL_IP}:${PORT}`);
-    console.log(`   • VPS IP: http://14.225.211.126:${PORT}`);
-    console.log(`   • Domain: http://ddarkness.duckdns.org:${PORT}`);
+    console.log(`   • VPS IP: http://14.225.211.126:${config.vpsPort || PORT}`);
+    
+    // Hiển thị domain URL tùy theo port
+    if (PORT == 80) {
+        console.log(`   • Domain: http://ddarkness.duckdns.org`);
+    } else if (PORT == 443) {
+        console.log(`   • Domain: https://ddarkness.duckdns.org`);
+    } else {
+        console.log(`   • Domain: http://ddarkness.duckdns.org:${PORT}`);
+    }
     console.log('');
     console.log('✅ Server sẵn sàng nhận kết nối!');
     console.log('='.repeat(60));

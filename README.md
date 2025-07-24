@@ -58,8 +58,11 @@ NODE_ENV=development node server.js
 # Chạy trên VPS với port 23070
 npm run vps
 
-# Chạy trên domain với port 80
+# Chạy trên domain với port 80 (không cần nhập port)
 npm run domain
+
+# Chạy trên domain với port 443 (HTTPS - không cần nhập port)
+npm run domain-https
 
 # Hoặc
 NODE_ENV=production node server.js
@@ -71,9 +74,23 @@ NODE_ENV=production node server.js
 PORT=3000 NODE_ENV=production node server.js
 ```
 
+### 4. Chuyển đổi môi trường nhanh
+```bash
+# Sử dụng script chuyển đổi
+npm run switch
+
+# Hoặc
+./switch-env.sh
+```
+
 ## 🌐 Truy cập
 
 Sau khi khởi động server, bạn có thể truy cập qua các URL sau:
+
+### 📝 Lưu ý về Domain URLs:
+- **Port 80**: Truy cập trực tiếp `http://ddarkness.duckdns.org` (không cần nhập port)
+- **Port 443**: Truy cập trực tiếp `https://ddarkness.duckdns.org` (không cần nhập port)
+- **Port khác**: Cần nhập port `http://ddarkness.duckdns.org:23070`
 
 ### Development
 - **Localhost**: http://localhost:23070
@@ -81,7 +98,8 @@ Sau khi khởi động server, bạn có thể truy cập qua các URL sau:
 
 ### Production
 - **VPS IP**: http://14.225.211.126:23070
-- **Domain**: http://ddarkness.duckdns.org:23070
+- **Domain (HTTP)**: http://ddarkness.duckdns.org
+- **Domain (HTTPS)**: https://ddarkness.duckdns.org
 
 ## 📁 Cấu trúc thư mục
 
@@ -167,7 +185,8 @@ Server sẽ hiển thị thông tin chi tiết khi khởi động:
    • Localhost: http://localhost:23070
    • Local IP: http://192.168.1.100:23070
    • VPS IP: http://14.225.211.126:23070
-   • Domain: http://ddarkness.duckdns.org:23070
+   • Domain (HTTP): http://ddarkness.duckdns.org
+   • Domain (HTTPS): https://ddarkness.duckdns.org
 
 ✅ Server sẵn sàng nhận kết nối!
 ============================================================
