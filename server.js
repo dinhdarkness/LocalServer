@@ -84,7 +84,7 @@ app.use(express.static('public'));
 // Cấu hình multer cho upload file
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        let uploadPath = path.join(process.cwd(), 'hot-update');
+        let uploadPath = path.join(process.cwd(), 'public', 'hot-update');
         
         // Nếu có uploadPath trong body, thêm vào đường dẫn gốc
         if (req.body.uploadPath && req.body.uploadPath.trim()) {
@@ -159,7 +159,7 @@ function getDirectoryTree(dirPath, basePath = '') {
 app.get('/api/tree', (req, res) => {
     try {
         const rootPath = process.cwd();
-        const hot_update_path = path.join(rootPath, config.upload.uploadDir);
+        const hot_update_path = path.join(rootPath, 'public', config.upload.uploadDir);
         const tree = getDirectoryTree(hot_update_path);
         
         res.json({
