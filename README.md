@@ -1,174 +1,201 @@
-# Directory Tree Viewer
+# Local Server - File Management System
 
-Ứng dụng web hiển thị cấu trúc cây thư mục của server với giao diện đẹp và dễ sử dụng.
+Hệ thống quản lý file với giao diện web, hỗ trợ upload file và xem cấu trúc thư mục.
 
-## Tính năng
+## 🌟 Tính năng
 
-- 🌳 Hiển thị cấu trúc cây thư mục đầy đủ
-- 📁 Phân biệt thư mục và file với icon khác nhau
-- 📊 Thống kê số lượng thư mục, file và tổng dung lượng
-- 🔄 Làm mới dữ liệu theo thời gian thực
-- 📂 Mở rộng/thu gọn tất cả thư mục
-- 🆕 **Tạo thư mục mới** với đường dẫn tùy chỉnh
-- 📤 **Upload file** vào thư mục bất kỳ
-- ✏️ **Đổi tên** thư mục và file
-- 🖱️ **Context menu** (click chuột phải) cho các thao tác nhanh
-- 🔔 **Toast notifications** cho thông báo
-- 🎨 Giao diện hiện đại với hiệu ứng đẹp mắt
-- 📱 Responsive design cho mobile và desktop
-- ⚡ Tương tác mượt mà với animation
+- 📁 Xem cấu trúc thư mục dạng cây
+- 📤 Upload file (hỗ trợ nhiều file cùng lúc)
+- 📝 Tạo thư mục mới
+- ✏️ Đổi tên file/thư mục
+- 📊 Thống kê số lượng file và dung lượng
+- 🎯 Chọn và xem thông tin file/thư mục
+- 🌐 Hỗ trợ nhiều môi trường (localhost, local IP, VPS, domain)
 
-## Cài đặt
+## 🚀 Cài đặt
 
-### Cách 1: Sử dụng script tự động (Khuyến nghị)
-
-**macOS/Linux:**
 ```bash
-./start.sh
-```
+# Clone repository
+git clone <repository-url>
+cd LocalServer
 
-**Windows:**
-```cmd
-start.bat
-```
-
-### Cách 2: Thủ công
-
-1. Cài đặt dependencies:
-```bash
+# Cài đặt dependencies
 npm install
 ```
 
-2. Khởi chạy server:
-```bash
-npm start
+## 🔧 Cấu hình
+
+### File config.js
+File này chứa cấu hình cho các môi trường khác nhau:
+
+```javascript
+// Các host được phép truy cập
+allowedHosts: [
+    'localhost',
+    '127.0.0.1',
+    '14.225.211.126',        // VPS IP
+    'ddarkness.duckdns.org'  // Domain
+]
 ```
 
-Hoặc chạy ở chế độ development với nodemon:
+### Biến môi trường
+- `NODE_ENV`: development/production
+- `PORT`: Port để chạy server (mặc định: 23070)
+
+## 🏃‍♂️ Chạy server
+
+### 1. Development (Local)
 ```bash
+# Chạy trên localhost
 npm run dev
+
+# Hoặc
+NODE_ENV=development node server.js
 ```
 
-3. Mở trình duyệt và truy cập:
-```
-http://localhost:23070
+### 2. Production (VPS/Domain)
+```bash
+# Chạy trên VPS với port 23070
+npm run vps
+
+# Chạy trên domain với port 80
+npm run domain
+
+# Hoặc
+NODE_ENV=production node server.js
 ```
 
-## Cấu trúc dự án
+### 3. Tùy chỉnh port
+```bash
+# Chạy với port tùy chỉnh
+PORT=3000 NODE_ENV=production node server.js
+```
+
+## 🌐 Truy cập
+
+Sau khi khởi động server, bạn có thể truy cập qua các URL sau:
+
+### Development
+- **Localhost**: http://localhost:23070
+- **Local IP**: http://[local-ip]:23070
+
+### Production
+- **VPS IP**: http://14.225.211.126:23070
+- **Domain**: http://ddarkness.duckdns.org:23070
+
+## 📁 Cấu trúc thư mục
 
 ```
 LocalServer/
-├── server.js              # Server Express
-├── package.json           # Dependencies và scripts
-├── start.sh               # Script khởi chạy (macOS/Linux)
-├── start.bat              # Script khởi chạy (Windows)
-├── public/                # Static files
-│   ├── index.html         # Trang chính
-│   ├── styles.css         # CSS styles
-│   └── script.js          # JavaScript logic
-└── README.md              # Hướng dẫn sử dụng
+├── public/
+│   ├── index.html      # Giao diện chính
+│   ├── script.js       # Logic JavaScript
+│   └── styles.css      # CSS styling
+├── hot-update/         # Thư mục upload file
+├── server.js           # Server Express
+├── config.js           # Cấu hình môi trường
+├── package.json        # Dependencies
+└── README.md           # Hướng dẫn
 ```
 
-## API Endpoints
+## 🔒 Bảo mật
 
-### GET /api/tree
-Trả về cấu trúc cây thư mục hiện tại.
+### CORS Configuration
+- **Development**: Cho phép tất cả origin (`*`)
+- **Production**: Chỉ cho phép các host được cấu hình
 
-**Response:**
+### File Upload
+- Giới hạn file size: 50MB
+- Hỗ trợ nhiều file cùng lúc
+- Tự động tạo thư mục nếu chưa tồn tại
+
+## 🛠️ API Endpoints
+
+### GET `/api/tree`
+Lấy cấu trúc thư mục
 ```json
 {
   "success": true,
   "data": {
-    "root": "LocalServer",
-    "path": "/path/to/current/directory",
-    "items": [
-      {
-        "name": "folder-name",
-        "type": "directory",
-        "path": "folder-name",
-        "children": [...]
-      },
-      {
-        "name": "file-name.js",
-        "type": "file",
-        "path": "file-name.js",
-        "size": 1024
-      }
-    ]
+    "root": "hot-update",
+    "path": "/path/to/hot-update",
+    "items": [...]
   }
 }
 ```
 
-### POST /api/folder
-Tạo thư mục mới.
+### POST `/api/upload`
+Upload file
+```json
+{
+  "uploadPath": "optional/subfolder",
+  "file": "file_data"
+}
+```
 
-**Request:**
+### POST `/api/folder`
+Tạo thư mục mới
 ```json
 {
   "folderPath": "optional/path",
-  "folderName": "new-folder"
+  "folderName": "new_folder"
 }
 ```
 
-### PUT /api/rename
-Đổi tên thư mục hoặc file.
-
-**Request:**
+### PUT `/api/rename`
+Đổi tên file/thư mục
 ```json
 {
-  "oldPath": "path/to/old-name",
-  "newName": "new-name"
+  "oldPath": "path/to/old_name",
+  "newName": "new_name"
 }
 ```
 
-### POST /api/upload
-Upload file vào thư mục.
+## 📝 Logs
 
-**Request:** FormData với:
-- `file`: File cần upload
-- `uploadPath`: Đường dẫn thư mục đích (optional)
+Server sẽ hiển thị thông tin chi tiết khi khởi động:
 
-## Tính năng giao diện
+```
+============================================================
+🚀 Server đã khởi động thành công!
+============================================================
+📍 Môi trường: development
+🔧 Port: 23070
+📁 Thư mục gốc: /path/to/LocalServer
 
-- **Header**: Tiêu đề và các nút điều khiển
-- **Info Panel**: Hiển thị thông tin thư mục gốc và thời gian cập nhật
-- **Tree Container**: Hiển thị cấu trúc cây thư mục với khả năng scroll
-- **Stats Panel**: Thống kê tổng quan về thư mục và file
+🌐 Các URL có thể truy cập:
+   • Localhost: http://localhost:23070
+   • Local IP: http://192.168.1.100:23070
+   • VPS IP: http://14.225.211.126:23070
+   • Domain: http://ddarkness.duckdns.org:23070
 
-## Các nút điều khiển
+✅ Server sẵn sàng nhận kết nối!
+============================================================
+```
 
-- **Tạo thư mục**: Tạo thư mục mới với đường dẫn tùy chỉnh
-- **Upload file**: Upload file vào thư mục bất kỳ
-- **Làm mới**: Tải lại cấu trúc thư mục từ server
-- **Mở rộng tất cả**: Hiển thị tất cả thư mục con
-- **Thu gọn tất cả**: Ẩn tất cả thư mục con
+## 🔧 Troubleshooting
 
-## Tương tác
+### Port đã được sử dụng
+```bash
+# Kiểm tra port đang sử dụng
+lsof -i :23070
 
-- Click vào thư mục để mở/đóng
-- Icon thư mục thay đổi khi mở/đóng
-- **Click chuột phải** để mở context menu với các tùy chọn:
-  - Đổi tên thư mục/file
-  - Upload file vào thư mục (chỉ cho thư mục)
-- Hover effect trên các item
-- Loading spinner khi tải dữ liệu
-- Toast notifications cho thông báo thành công/lỗi
-- Modal dialogs cho các thao tác phức tạp
+# Kill process nếu cần
+kill -9 <PID>
+```
 
-## Công nghệ sử dụng
+### Permission denied
+```bash
+# Chạy với quyền admin (Linux/Mac)
+sudo npm run vps
 
-- **Backend**: Node.js + Express
-- **Frontend**: Vanilla JavaScript + CSS3
-- **Icons**: Font Awesome
-- **Styling**: CSS Grid + Flexbox + CSS Variables
+# Hoặc thay đổi port
+PORT=8080 npm run vps
+```
 
-## Lưu ý bảo mật
+### CORS errors
+Kiểm tra file `config.js` và đảm bảo domain được thêm vào `allowedHosts`.
 
-Ứng dụng này hiển thị toàn bộ cấu trúc thư mục của server. Hãy đảm bảo:
-- Chỉ chạy trong môi trường an toàn
-- Không expose ra internet nếu không cần thiết
-- Kiểm soát quyền truy cập thư mục
+## 📄 License
 
-## License
-
-MIT License 
+ISC License 

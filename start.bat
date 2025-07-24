@@ -1,58 +1,56 @@
 @echo off
-chcp 65001 >nul
-title Directory Tree Viewer
-
-echo ================================
-echo   Directory Tree Viewer
-echo ================================
+echo ============================================================
+echo 🚀 Local Server - File Management System
+echo ============================================================
 echo.
+echo Chọn môi trường để chạy:
+echo 1. Development (localhost)
+echo 2. Production (VPS/Domain)
+echo 3. VPS với port 23070
+echo 4. Domain với port 80
+echo 5. Tùy chỉnh port
+echo.
+set /p choice="Nhập lựa chọn (1-5): "
 
-:: Kiểm tra Node.js
-echo [INFO] Kiểm tra Node.js...
-node --version >nul 2>&1
-if errorlevel 1 (
-    echo [ERROR] Node.js không được cài đặt. Vui lòng cài đặt Node.js trước.
-    pause
-    exit /b 1
-)
-
-:: Kiểm tra npm
-echo [INFO] Kiểm tra npm...
-npm --version >nul 2>&1
-if errorlevel 1 (
-    echo [ERROR] npm không được cài đặt. Vui lòng cài đặt npm trước.
-    pause
-    exit /b 1
-)
-
-:: Cài đặt dependencies nếu cần
-if not exist "node_modules" (
-    echo [INFO] Cài đặt dependencies...
-    npm install
-    if errorlevel 1 (
-        echo [ERROR] Không thể cài đặt dependencies
-        pause
-        exit /b 1
-    )
-    echo [INFO] Dependencies đã được cài đặt thành công
+if "%choice%"=="1" (
+    echo.
+    echo 🏃‍♂️ Khởi động server ở chế độ Development...
+    set NODE_ENV=development
+    node server.js
+) else if "%choice%"=="2" (
+    echo.
+    echo 🏃‍♂️ Khởi động server ở chế độ Production...
+    set NODE_ENV=production
+    node server.js
+) else if "%choice%"=="3" (
+    echo.
+    echo 🏃‍♂️ Khởi động server trên VPS...
+    set NODE_ENV=production
+    set PORT=23070
+    node server.js
+) else if "%choice%"=="4" (
+    echo.
+    echo 🏃‍♂️ Khởi động server trên Domain...
+    set NODE_ENV=production
+    set PORT=80
+    node server.js
+) else if "%choice%"=="5" (
+    echo.
+    set /p custom_port="Nhập port tùy chỉnh: "
+    set /p custom_env="Nhập môi trường (development/production): "
+    echo.
+    echo 🏃‍♂️ Khởi động server với cấu hình tùy chỉnh...
+    set NODE_ENV=%custom_env%
+    set PORT=%custom_port%
+    node server.js
 ) else (
-    echo [INFO] Dependencies đã tồn tại
+    echo.
+    echo ❌ Lựa chọn không hợp lệ!
+    echo.
+    pause
+    exit /b 1
 )
 
-:: Khởi chạy server
-echo [INFO] Khởi chạy server...
-start /B npm start
-
-:: Đợi server khởi động
-timeout /t 3 /nobreak >nul
-
-:: Mở trình duyệt
-echo [INFO] Mở trình duyệt...
-start http://localhost:23070
-
-echo [INFO] Ứng dụng đã sẵn sàng!
-echo [INFO] Nhấn Ctrl+C để dừng server
 echo.
-
-:: Giữ cửa sổ mở
+echo ✅ Server đã dừng.
 pause 

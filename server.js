@@ -2,15 +2,55 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-const https = require('https');
-const http = require('http');
+const os = require('os');
+const { config, env, isDevelopment } = require('./config');
 
 const app = express();
-const PORT = process.env.PORT || 23070;
-const HTTPS_PORT = process.env.HTTPS_PORT || 23071;
+const PORT = config.port;
+
+// Lấy local IP
+function getLocalIP() {
+    const interfaces = os.networkInterfaces();
+    for (const name of Object.keys(interfaces)) {
+        for (const interface of interfaces[name]) {
+            if (interface.family === 'IPv4' && !interface.internal) {
+                return interface.address;
+            }
+        }
+    }
+    return 'localhost';
+}
+
+const LOCAL_IP = getLocalIP();
 
 // Middleware để parse JSON
 app.use(express.json());
+
+// CORS middleware cho phép truy cập từ các domain khác nhau
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    const host = req.headers.host;
+    
+    // Cho phép tất cả origin trong development
+    if (isDevelopment) {
+        res.header('Access-Control-Allow-Origin', '*');
+    } else {
+        // Trong production, chỉ cho phép các host được cấu hình
+        if (config.allowedHosts.some(allowedHost => host.includes(allowedHost))) {
+            res.header('Access-Control-Allow-Origin', origin || '*');
+        }
+    }
+    
+    res.header('Access-Control-Allow-Methods', config.cors.methods.join(', '));
+    res.header('Access-Control-Allow-Headers', config.cors.headers.join(', '));
+    
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    
+    next();
+});
+
 app.use(express.static('public'));
 
 // Cấu hình multer cho upload file
@@ -42,7 +82,7 @@ const storage = multer.diskStorage({
 const upload = multer({ 
     storage: storage,
     limits: {
-        fileSize: 50 * 1024 * 1024 // Giới hạn 50MB
+        fileSize: config.upload.maxFileSize
     }
 });
 
@@ -91,7 +131,7 @@ function getDirectoryTree(dirPath, basePath = '') {
 app.get('/api/tree', (req, res) => {
     try {
         const rootPath = process.cwd();
-        const hot_update_path = path.join(rootPath, 'public', 'hot-update');
+        const hot_update_path = path.join(rootPath, config.upload.uploadDir);
         const tree = getDirectoryTree(hot_update_path);
         
         res.json({
@@ -184,7 +224,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
             });
         }
         
-        const uploadPath = path.join(process.cwd(), 'hot-update', req.body.uploadPath || '');
+        const uploadPath = path.join(process.cwd(), config.upload.uploadDir, req.body.uploadPath || '');
         const relativePath = uploadPath ? path.join(uploadPath, req.file.originalname) : req.file.originalname;
         console.log(relativePath);
         res.json({
@@ -236,52 +276,21 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Kiểm tra SSL certificate
-let sslOptions;
-try {
-    sslOptions = {
-        key: fs.readFileSync(path.join(__dirname, 'ssl', 'private-key.pem')),
-        cert: fs.readFileSync(path.join(__dirname, 'ssl', 'certificate.pem'))
-    };
-} catch (error) {
-    console.log('⚠️  SSL certificate không tìm thấy. Chạy "npm run ssl" để tạo certificate.');
-    console.log('🚀 Khởi động server HTTP thông thường...');
-    
-    // Khởi động HTTP server thông thường
-    app.listen(PORT, '0.0.0.0', () => {
-        console.log(`🔗 HTTP Server đang chạy tại:`);
-        console.log(`   - http://localhost:${PORT}`);
-        console.log(`   - http://192.168.1.37:${PORT}`);
-        console.log(`📁 Cấu trúc thư mục gốc: ${process.cwd()}`);
-    });
-    return;
-}
-
-// Tạo HTTPS server
-const httpsServer = https.createServer(sslOptions, app);
-
-// Tạo HTTP server để redirect sang HTTPS
-const httpApp = express();
-httpApp.use((req, res) => {
-    const host = req.headers.host;
-    const newHost = host.replace(':23070', ':23071');
-    res.redirect(`https://${newHost}${req.url}`);
-});
-
-const httpServer = http.createServer(httpApp);
-
-// Khởi động cả HTTP và HTTPS server
-httpServer.listen(PORT, '0.0.0.0', () => {
-    console.log(`🔗 HTTP Server đang chạy tại:`);
-    console.log(`   - http://localhost:${PORT}`);
-    console.log(`   - http://192.168.1.37:${PORT}`);
-    console.log(`   (Redirect sang HTTPS)`);
-});
-
-httpsServer.listen(HTTPS_PORT, '0.0.0.0', () => {
-    console.log(`🔒 HTTPS Server đang chạy tại:`);
-    console.log(`   - https://localhost:${HTTPS_PORT}`);
-    console.log(`   - https://192.168.1.37:${HTTPS_PORT}`);
-    console.log(`📁 Cấu trúc thư mục gốc: ${process.cwd()}`);
-    console.log(`⚠️  Lưu ý: Sử dụng self-signed certificate, trình duyệt có thể cảnh báo bảo mật`);
+// Khởi động server trên tất cả interfaces
+app.listen(PORT, '0.0.0.0', () => {
+    console.log('='.repeat(60));
+    console.log('🚀 Server đã khởi động thành công!');
+    console.log('='.repeat(60));
+    console.log(`📍 Môi trường: ${env}`);
+    console.log(`🔧 Port: ${PORT}`);
+    console.log(`📁 Thư mục gốc: ${process.cwd()}`);
+    console.log('');
+    console.log('🌐 Các URL có thể truy cập:');
+    console.log(`   • Localhost: http://localhost:${PORT}`);
+    console.log(`   • Local IP: http://${LOCAL_IP}:${PORT}`);
+    console.log(`   • VPS IP: http://14.225.211.126:${PORT}`);
+    console.log(`   • Domain: http://ddarkness.duckdns.org:${PORT}`);
+    console.log('');
+    console.log('✅ Server sẵn sàng nhận kết nối!');
+    console.log('='.repeat(60));
 }); 
