@@ -7,6 +7,13 @@ echo "============================================================"
 echo "🚀 Local Server - Universal Runner"
 echo "============================================================"
 
+# Load NVM nếu có
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
+    echo "📦 Loading NVM..."
+    source "$HOME/.nvm/nvm.sh"
+    nvm use default >/dev/null 2>&1
+fi
+
 # Tìm Node.js trong nhiều vị trí khác nhau
 NODE_PATHS=(
     "node"

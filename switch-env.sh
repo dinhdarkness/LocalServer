@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Load NVM nếu có
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
+    echo "📦 Loading NVM..."
+    source "$HOME/.nvm/nvm.sh"
+    nvm use default >/dev/null 2>&1
+fi
+
 # Kiểm tra Node.js
 if ! command -v node &> /dev/null; then
     echo "❌ Node.js không được tìm thấy!"
