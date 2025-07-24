@@ -6,7 +6,7 @@ const config = {
             'localhost',
             '127.0.0.1',
             '14.225.211.126',
-            'ddarkness.duckdns.org'
+            'ddarkness.io.vn'
         ],
         cors: {
             origin: '*',
@@ -24,7 +24,7 @@ const config = {
             'localhost',
             '127.0.0.1',
             '14.225.211.126',
-            'ddarkness.duckdns.org'
+            'ddarkness.io.vn'
         ],
         // Cấu hình port cho domain (không cần nhập port)
         domainPort: 80,
@@ -33,8 +33,8 @@ const config = {
         // Cấu hình SSL
         ssl: {
             enabled: true,
-            certPath: '/etc/letsencrypt/live/ddarkness.duckdns.org/fullchain.pem',
-            keyPath: '/etc/letsencrypt/live/ddarkness.duckdns.org/privkey.pem'
+            certPath: '/etc/letsencrypt/live/ddarkness.io.vn/fullchain.pem',
+            keyPath: '/etc/letsencrypt/live/ddarkness.io.vn/privkey.pem'
         },
         cors: {
             origin: function(origin, callback) {

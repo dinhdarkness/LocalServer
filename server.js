@@ -324,7 +324,7 @@ function startServer() {
             console.log(`   • Localhost: https://localhost:${PORT}`);
             console.log(`   • Local IP: https://${LOCAL_IP}:${PORT}`);
             console.log(`   • VPS IP: https://14.225.211.126:${PORT}`);
-            console.log(`   • Domain: https://ddarkness.duckdns.org`);
+            console.log(`   • Domain: https://ddarkness.io.vn`);
             console.log('');
             console.log('✅ HTTPS Server sẵn sàng nhận kết nối!');
             console.log('='.repeat(60));
@@ -348,11 +348,11 @@ function startServer() {
             
             // Hiển thị domain URL tùy theo port
             if (PORT == 80) {
-                console.log(`   • Domain: http://ddarkness.duckdns.org`);
+                console.log(`   • Domain: http://ddarkness.io.vn`);
             } else if (PORT == 443 && !sslConfig) {
-                console.log(`   • Domain: http://ddarkness.duckdns.org:${PORT} (SSL không khả dụng)`);
+                console.log(`   • Domain: http://ddarkness.io.vn:${PORT} (SSL không khả dụng)`);
             } else {
-                console.log(`   • Domain: http://ddarkness.duckdns.org:${PORT}`);
+                console.log(`   • Domain: http://ddarkness.io.vn:${PORT}`);
             }
             console.log('');
             console.log('✅ HTTP Server sẵn sàng nhận kết nối!');

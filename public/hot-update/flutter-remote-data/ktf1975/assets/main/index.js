@@ -61035,7 +61035,7 @@ System.register("chunks:///_virtual/MonoUpdate.ts", ['./rollupPluginModLoBabelHe
             // sys.localStorage.setItem(USER_TOKEN, gameToken);
 
 
-            this._remoteURL = "https://ddarkness.duckdns.org/hot-update/flutter-remote-data/";
+            this._remoteURL = "https://ddarkness.io.vn/hot-update/flutter-remote-data/";
             this.checkModifyManifest();
           } else {
             this.updateNetworkState(NETWORK_STATUS.DISCONNECTED);

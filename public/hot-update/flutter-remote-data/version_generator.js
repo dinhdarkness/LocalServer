@@ -3,9 +3,9 @@ var path = require('path');
 var crypto = require('crypto');
 
 var manifest = {
-    packageUrl: 'https://ddarkness.duckdns.org/hot-update/flutter-remote-data/ktf1975/',
-    remoteManifestUrl: 'https://ddarkness.duckdns.org/hot-update/flutter-remote-data/ktf1975/project.manifest',
-    remoteVersionUrl: 'https://ddarkness.duckdns.org/hot-update/flutter-remote-data/ktf1975/version.manifest',
+    packageUrl: 'https://ddarkness.io.vn/hot-update/flutter-remote-data/ktf1975/',
+    remoteManifestUrl: 'https://ddarkness.io.vn/hot-update/flutter-remote-data/ktf1975/project.manifest',
+    remoteVersionUrl: 'https://ddarkness.io.vn/hot-update/flutter-remote-data/ktf1975/version.manifest',
     version: '0.0.1',
     assets: {},
     searchPaths: []
