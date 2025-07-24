@@ -33,8 +33,8 @@ const config = {
         // Cấu hình SSL
         ssl: {
             enabled: true,
-            certPath: '/etc/letsencrypt/live/ddarkness.io.vn/fullchain.pem',
-            keyPath: '/etc/letsencrypt/live/ddarkness.io.vn/privkey.pem'
+            certPath: '/home/ddarkness/Work/LocalServer/ssl/fullchain.pem',
+            keyPath: '/home/ddarkness/Work/LocalServer/ssl/privkey.pem'
         },
         cors: {
             origin: function(origin, callback) {
