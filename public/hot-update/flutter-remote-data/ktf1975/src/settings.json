@@ -145,7 +145,7 @@
         ]
     },
     "launch": {
-        "launchScene": "db://assets/cc-common/cc-lobby-999/scenes/Preload.scene"
+        "launchScene": "db://assets/cc-common/HotUpdatesForEachGame/HotUpdatesScene.scene"
     },
     "screen": {
         "exactFitScreen": true,

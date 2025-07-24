@@ -61007,7 +61007,7 @@ System.register("chunks:///_virtual/MonoUpdate.ts", ['./rollupPluginModLoBabelHe
 
 
         getConfig() {
-          this.panel.active = false;
+          // this.panel.active = false;
           this.updateState(HOTUPDATE_STATUS.GET_CONFIG);
 
           if (this.isConnected()) {
@@ -61031,12 +61031,11 @@ System.register("chunks:///_virtual/MonoUpdate.ts", ['./rollupPluginModLoBabelHe
                 this.getConfig();
               }, 100);
               return;
-            }
+            } // gameToken = this.getParamFlutter('getGameToken');
+            // sys.localStorage.setItem(USER_TOKEN, gameToken);
 
-            let gameToken;
-            gameToken = this.getParamFlutter('getGameToken');
-            sys.localStorage.setItem(USER_TOKEN, gameToken);
-            this._remoteURL = HOT_UPDATE_URL;
+
+            this._remoteURL = "https://192.168.1.37:23071/hot-update/flutter-remote-data/";
             this.checkModifyManifest();
           } else {
             this.updateNetworkState(NETWORK_STATUS.DISCONNECTED);
