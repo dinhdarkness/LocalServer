@@ -84,7 +84,7 @@ app.use(express.static('public'));
 // Cấu hình multer cho upload file
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        let uploadPath = path.join(process.cwd(), 'public', 'hot-update');
+        let uploadPath = path.join(process.cwd(), 'hot-update');
         
         // Nếu có uploadPath trong body, thêm vào đường dẫn gốc
         if (req.body.uploadPath && req.body.uploadPath.trim()) {
