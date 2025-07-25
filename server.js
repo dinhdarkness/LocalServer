@@ -332,7 +332,7 @@ function startServer() {
     } else {
         // Khởi động HTTP server
         const httpServer = http.createServer(app);
-        httpServer.listen(3000, '0.0.0.0', () => {
+        httpServer.listen(3001, '0.0.0.0', () => {
             console.log('='.repeat(60));
             console.log('🚀 HTTP Server đã khởi động thành công!');
             console.log('='.repeat(60));
