@@ -19,7 +19,7 @@ const config = {
         }
     },
     production: {
-        port: process.env.PORT || 3000,
+        port: process.env.PORT || 443,
         allowedHosts: [
             'localhost',
             '127.0.0.1',
@@ -32,7 +32,7 @@ const config = {
         vpsPort: 3000,
         // Cấu hình SSL
         ssl: {
-            enabled: false,
+            enabled: true,
             certPath: '/home/ddarkness/Work/LocalServer/ssl/fullchain.pem',
             keyPath: '/home/ddarkness/Work/LocalServer/ssl/privkey.pem'
         },
