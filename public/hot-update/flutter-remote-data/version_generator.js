@@ -97,9 +97,10 @@ var mkdirSync = function (path) {
     }
 }
 
-// Iterate assets and src folder
-readDir(path.join(src, 'src'), manifest.assets);
-readDir(path.join(src, 'assets'), manifest.assets);
+// Iterate assets and src folder assets_game
+// readDir(path.join(src, 'src'), manifest.assets);
+// readDir(path.join(src, 'assets'), manifest.assets);
+readDir(path.join(src, 'assets373'), manifest.assets);
 //readDir(path.join(src, 'jsb-adapter'), manifest.assets);
 
 var destManifest = path.join(dest, 'project.manifest');
