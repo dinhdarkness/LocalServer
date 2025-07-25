@@ -32,7 +32,7 @@ const config = {
         vpsPort: 3000,
         // Cấu hình SSL
         ssl: {
-            enabled: true,
+            enabled: false,
             certPath: '/home/ddarkness/Work/LocalServer/ssl/fullchain.pem',
             keyPath: '/home/ddarkness/Work/LocalServer/ssl/privkey.pem'
         },
