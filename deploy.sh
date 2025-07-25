@@ -29,4 +29,4 @@ echo "🔐 SSL: Let's Encrypt Certificate"
 echo ""
 export NODE_ENV=production
 export PORT=443
-node server.js
+sudo -E env "PATH=$PATH" NODE_ENV=production node server.js
