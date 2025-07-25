@@ -311,7 +311,7 @@ function startServer() {
     if (PORT == 443 && sslConfig) {
         // Khởi động HTTPS server
         const httpsServer = https.createServer(sslConfig, app);
-        httpsServer.listen(3000, '0.0.0.0', () => {
+        httpsServer.listen(PORT, '0.0.0.0', () => {
             console.log('='.repeat(60));
             console.log('🚀 HTTPS Server đã khởi động thành công!');
             console.log('='.repeat(60));
@@ -332,7 +332,7 @@ function startServer() {
     } else {
         // Khởi động HTTP server
         const httpServer = http.createServer(app);
-        httpServer.listen(3001, '0.0.0.0', () => {
+        httpServer.listen(PORT, '0.0.0.0', () => {
             console.log('='.repeat(60));
             console.log('🚀 HTTP Server đã khởi động thành công!');
             console.log('='.repeat(60));
