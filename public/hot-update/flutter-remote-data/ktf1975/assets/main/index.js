@@ -55103,252 +55103,6 @@ System.register("chunks:///_virtual/JackpotWinWheel1975.ts", ['cc', './gfReferen
   };
 });
 
-System.register("chunks:///_virtual/jbs_runtime_md5.ts", ['cc'], function (exports) {
-  var cclegacy;
-  return {
-    setters: [function (module) {
-      cclegacy = module.cclegacy;
-    }],
-    execute: function () {
-      exports('default', jbs_runtime_md5);
-
-      cclegacy._RF.push({}, "9f6f0JLxDpHZ51HTUGRMvQn", "jbs_runtime_md5", undefined);
-      /**
-       * from jsb_runtime_md5.js
-       * @param data - Input data as Uint8Array
-       * @returns MD5 hash string or null if invalid input
-       */
-
-
-      function jbs_runtime_md5(data) {
-        // for test/debug
-        function fflog(msg) {
-          try {
-            console.log(msg);
-          } catch (e) {
-            console.log(e);
-          }
-        } // convert number to (unsigned) 32 bit hex, zero filled string
-
-
-        function to_zerofilled_hex(n) {
-          const t1 = (n >>> 24).toString(16);
-          const t2 = (n & 0x00FFFFFF).toString(16);
-          return "00".substr(0, 2 - t1.length) + t1 + "000000".substr(0, 6 - t2.length) + t2;
-        } // convert a 64 bit unsigned number to array of bytes. Little endian
-
-
-        function int64_to_bytes(num) {
-          const retval = [];
-
-          for (let i = 0; i < 8; i++) {
-            retval.push(num & 0xFF);
-            num = num >>> 8;
-          }
-
-          return retval;
-        } //  32 bit left-rotation
-
-
-        function rol(num, places) {
-          return num << places & 0xFFFFFFFF | num >>> 32 - places;
-        } // The 4 MD5 functions
-
-
-        function fF(b, c, d) {
-          return b & c | ~b & d;
-        }
-
-        function fG(b, c, d) {
-          return d & b | ~d & c;
-        }
-
-        function fH(b, c, d) {
-          return b ^ c ^ d;
-        }
-
-        function fI(b, c, d) {
-          return c ^ (b | ~d);
-        } // pick 4 bytes at specified offset. Little-endian is assumed
-
-
-        function bytes_to_int32(arr, off) {
-          return arr[off + 3] << 24 | arr[off + 2] << 16 | arr[off + 1] << 8 | arr[off];
-        } // convert the 4 32-bit buffers to a 128 bit hex string. (Little-endian is assumed)
-
-
-        function int128le_to_hex(h3, h2, h1, h0) {
-          let ra = "";
-          let t = 0;
-          let ta = 0;
-
-          for (let i = 3; i >= 0; i--) {
-            ta = arguments[i];
-            t = ta & 0xFF;
-            ta = ta >>> 8;
-            t = t << 8;
-            t = t | ta & 0xFF;
-            ta = ta >>> 8;
-            t = t << 8;
-            t = t | ta & 0xFF;
-            ta = ta >>> 8;
-            t = t << 8;
-            t = t | ta;
-            ra = ra + to_zerofilled_hex(t);
-          }
-
-          return ra;
-        } // check input data type and perform conversions if needed
-
-
-        if (!(data instanceof Uint8Array)) {
-          fflog("input data type mismatch only support Uint8Array");
-          return null;
-        }
-
-        const databytes = [];
-
-        for (let i = 0; i < data.byteLength; i++) {
-          databytes.push(data[i]);
-        } // save original length
-
-
-        const org_len = databytes.length; // first append the "1" + 7x "0"
-
-        databytes.push(0x80); // determine required amount of padding
-
-        let tail = databytes.length % 64; // no room for msg length?
-
-        if (tail > 56) {
-          // pad to next 512 bit block
-          for (let j = 0; j < 64 - tail; j++) {
-            databytes.push(0x0);
-          }
-
-          tail = databytes.length % 64;
-        }
-
-        for (let i = 0; i < 56 - tail; i++) {
-          databytes.push(0x0);
-        } // message length in bits mod 512 should now be 448
-        // append 64 bit, little-endian original msg length (in *bits*!)
-
-
-        databytes.push(...int64_to_bytes(org_len * 8)); // initialize 4x32 bit state
-
-        let h0 = 0x67452301;
-        let h1 = 0xEFCDAB89;
-        let h2 = 0x98BADCFE;
-        let h3 = 0x10325476; // temp buffers
-
-        let a = 0,
-            b = 0,
-            c = 0,
-            d = 0;
-
-        function _add(n1, n2) {
-          return 0x0FFFFFFFF & n1 + n2;
-        } // function update partial state for each run
-
-
-        const updateRun = function (nf, sin32, dw32, b32) {
-          const temp = d;
-          d = c;
-          c = b; //b = b + rol(a + (nf + (sin32 + dw32)), b32);
-
-          b = _add(b, rol(_add(a, _add(nf, _add(sin32, dw32))), b32));
-          a = temp;
-        }; // Digest message
-
-
-        for (let i = 0; i < databytes.length / 64; i++) {
-          // initialize run
-          a = h0;
-          b = h1;
-          c = h2;
-          d = h3;
-          const ptr = i * 64; // do 64 runs
-
-          updateRun(fF(b, c, d), 0xd76aa478, bytes_to_int32(databytes, ptr), 7);
-          updateRun(fF(b, c, d), 0xe8c7b756, bytes_to_int32(databytes, ptr + 4), 12);
-          updateRun(fF(b, c, d), 0x242070db, bytes_to_int32(databytes, ptr + 8), 17);
-          updateRun(fF(b, c, d), 0xc1bdceee, bytes_to_int32(databytes, ptr + 12), 22);
-          updateRun(fF(b, c, d), 0xf57c0faf, bytes_to_int32(databytes, ptr + 16), 7);
-          updateRun(fF(b, c, d), 0x4787c62a, bytes_to_int32(databytes, ptr + 20), 12);
-          updateRun(fF(b, c, d), 0xa8304613, bytes_to_int32(databytes, ptr + 24), 17);
-          updateRun(fF(b, c, d), 0xfd469501, bytes_to_int32(databytes, ptr + 28), 22);
-          updateRun(fF(b, c, d), 0x698098d8, bytes_to_int32(databytes, ptr + 32), 7);
-          updateRun(fF(b, c, d), 0x8b44f7af, bytes_to_int32(databytes, ptr + 36), 12);
-          updateRun(fF(b, c, d), 0xffff5bb1, bytes_to_int32(databytes, ptr + 40), 17);
-          updateRun(fF(b, c, d), 0x895cd7be, bytes_to_int32(databytes, ptr + 44), 22);
-          updateRun(fF(b, c, d), 0x6b901122, bytes_to_int32(databytes, ptr + 48), 7);
-          updateRun(fF(b, c, d), 0xfd987193, bytes_to_int32(databytes, ptr + 52), 12);
-          updateRun(fF(b, c, d), 0xa679438e, bytes_to_int32(databytes, ptr + 56), 17);
-          updateRun(fF(b, c, d), 0x49b40821, bytes_to_int32(databytes, ptr + 60), 22);
-          updateRun(fG(b, c, d), 0xf61e2562, bytes_to_int32(databytes, ptr + 4), 5);
-          updateRun(fG(b, c, d), 0xc040b340, bytes_to_int32(databytes, ptr + 24), 9);
-          updateRun(fG(b, c, d), 0x265e5a51, bytes_to_int32(databytes, ptr + 44), 14);
-          updateRun(fG(b, c, d), 0xe9b6c7aa, bytes_to_int32(databytes, ptr), 20);
-          updateRun(fG(b, c, d), 0xd62f105d, bytes_to_int32(databytes, ptr + 20), 5);
-          updateRun(fG(b, c, d), 0x2441453, bytes_to_int32(databytes, ptr + 40), 9);
-          updateRun(fG(b, c, d), 0xd8a1e681, bytes_to_int32(databytes, ptr + 60), 14);
-          updateRun(fG(b, c, d), 0xe7d3fbc8, bytes_to_int32(databytes, ptr + 16), 20);
-          updateRun(fG(b, c, d), 0x21e1cde6, bytes_to_int32(databytes, ptr + 36), 5);
-          updateRun(fG(b, c, d), 0xc33707d6, bytes_to_int32(databytes, ptr + 56), 9);
-          updateRun(fG(b, c, d), 0xf4d50d87, bytes_to_int32(databytes, ptr + 12), 14);
-          updateRun(fG(b, c, d), 0x455a14ed, bytes_to_int32(databytes, ptr + 32), 20);
-          updateRun(fG(b, c, d), 0xa9e3e905, bytes_to_int32(databytes, ptr + 52), 5);
-          updateRun(fG(b, c, d), 0xfcefa3f8, bytes_to_int32(databytes, ptr + 8), 9);
-          updateRun(fG(b, c, d), 0x676f02d9, bytes_to_int32(databytes, ptr + 28), 14);
-          updateRun(fG(b, c, d), 0x8d2a4c8a, bytes_to_int32(databytes, ptr + 48), 20);
-          updateRun(fH(b, c, d), 0xfffa3942, bytes_to_int32(databytes, ptr + 20), 4);
-          updateRun(fH(b, c, d), 0x8771f681, bytes_to_int32(databytes, ptr + 32), 11);
-          updateRun(fH(b, c, d), 0x6d9d6122, bytes_to_int32(databytes, ptr + 44), 16);
-          updateRun(fH(b, c, d), 0xfde5380c, bytes_to_int32(databytes, ptr + 56), 23);
-          updateRun(fH(b, c, d), 0xa4beea44, bytes_to_int32(databytes, ptr + 4), 4);
-          updateRun(fH(b, c, d), 0x4bdecfa9, bytes_to_int32(databytes, ptr + 16), 11);
-          updateRun(fH(b, c, d), 0xf6bb4b60, bytes_to_int32(databytes, ptr + 28), 16);
-          updateRun(fH(b, c, d), 0xbebfbc70, bytes_to_int32(databytes, ptr + 40), 23);
-          updateRun(fH(b, c, d), 0x289b7ec6, bytes_to_int32(databytes, ptr + 52), 4);
-          updateRun(fH(b, c, d), 0xeaa127fa, bytes_to_int32(databytes, ptr), 11);
-          updateRun(fH(b, c, d), 0xd4ef3085, bytes_to_int32(databytes, ptr + 12), 16);
-          updateRun(fH(b, c, d), 0x4881d05, bytes_to_int32(databytes, ptr + 24), 23);
-          updateRun(fH(b, c, d), 0xd9d4d039, bytes_to_int32(databytes, ptr + 36), 4);
-          updateRun(fH(b, c, d), 0xe6db99e5, bytes_to_int32(databytes, ptr + 48), 11);
-          updateRun(fH(b, c, d), 0x1fa27cf8, bytes_to_int32(databytes, ptr + 60), 16);
-          updateRun(fH(b, c, d), 0xc4ac5665, bytes_to_int32(databytes, ptr + 8), 23);
-          updateRun(fI(b, c, d), 0xf4292244, bytes_to_int32(databytes, ptr), 6);
-          updateRun(fI(b, c, d), 0x432aff97, bytes_to_int32(databytes, ptr + 28), 10);
-          updateRun(fI(b, c, d), 0xab9423a7, bytes_to_int32(databytes, ptr + 56), 15);
-          updateRun(fI(b, c, d), 0xfc93a039, bytes_to_int32(databytes, ptr + 20), 21);
-          updateRun(fI(b, c, d), 0x655b59c3, bytes_to_int32(databytes, ptr + 48), 6);
-          updateRun(fI(b, c, d), 0x8f0ccc92, bytes_to_int32(databytes, ptr + 12), 10);
-          updateRun(fI(b, c, d), 0xffeff47d, bytes_to_int32(databytes, ptr + 40), 15);
-          updateRun(fI(b, c, d), 0x85845dd1, bytes_to_int32(databytes, ptr + 4), 21);
-          updateRun(fI(b, c, d), 0x6fa87e4f, bytes_to_int32(databytes, ptr + 32), 6);
-          updateRun(fI(b, c, d), 0xfe2ce6e0, bytes_to_int32(databytes, ptr + 60), 10);
-          updateRun(fI(b, c, d), 0xa3014314, bytes_to_int32(databytes, ptr + 24), 15);
-          updateRun(fI(b, c, d), 0x4e0811a1, bytes_to_int32(databytes, ptr + 52), 21);
-          updateRun(fI(b, c, d), 0xf7537e82, bytes_to_int32(databytes, ptr + 16), 6);
-          updateRun(fI(b, c, d), 0xbd3af235, bytes_to_int32(databytes, ptr + 44), 10);
-          updateRun(fI(b, c, d), 0x2ad7d2bb, bytes_to_int32(databytes, ptr + 8), 15);
-          updateRun(fI(b, c, d), 0xeb86d391, bytes_to_int32(databytes, ptr + 36), 21); // update buffers
-
-          h0 = _add(h0, a);
-          h1 = _add(h1, b);
-          h2 = _add(h2, c);
-          h3 = _add(h3, d);
-        } // Done! Convert buffers to 128 bit (LE)
-
-
-        return int128le_to_hex(h3, h2, h1, h0).toLowerCase();
-      }
-
-      cclegacy._RF.pop();
-    }
-  };
-});
-
 System.register("chunks:///_virtual/JoinGameTransition1975.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './EventsCode1975.ts', './gfUtilities.ts', './gfActionHelper.ts', './utils.ts', './Config1975.ts', './gfEventEmitter.ts'], function (exports) {
   var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, sp, _decorator, Component, UIOpacity, tween, EventsCode1975, SetZIndex, registerEvent, removeEvents, stopAllActions, setOpacity, Config1975, gfEventEmitter;
 
@@ -59736,9 +59490,9 @@ System.register("chunks:///_virtual/LoginStaging.ts", ['./rollupPluginModLoBabel
   };
 });
 
-System.register("chunks:///_virtual/main", ['./debug-view-runtime-control.ts', './MonoUpdate.ts', './RetryInfo.ts', './jbs_runtime_md5.ts', './HotUpdateV2.ts', './UpdatePanelV2.ts', './HotUpdate.ts', './UpdatePanel.ts', './GameLogo.ts', './LayoutNodeInstance.ts', './Preload.ts', './BubbleFloatGames.ts', './EventList.ts', './GameEvent.ts', './GameQuest.ts', './InitSocketComponent.ts', './ItemLobby.ts', './LobbyDev.ts', './LobbyMenu.ts', './LobbyScene.ts', './LoginDev.ts', './LoginStaging.ts', './connectNetwork.ts', './game-network.mjs_cjs=&original=.js', './globalNetwork.ts', './eDupLogin.ts', './eFishNotify.ts', './eForceLobby.ts', './eSlowNetwork.ts', './eDebugStats.ts', './eFPSGraph.ts', './eHideHelper.ts', './eImageMemory.ts', './eSnapMem.ts', './eEventEmitter.ts', './MenuController.ts', './eDialog.ts', './eDialogController.ts', './eDragUI.ts', './eGraph.ts', './eGroup.ts', './eItem.ts', './eList.ts', './eMenu.ts', './eSlider.ts', './eToggle.ts', './keepAspectRatio.ts', './StateEvents.ts', './captureButton.ts', './fpsGraph.ts', './fpsRecorder.ts', './issuesRecorder.ts', './monitorController.ts', './screenshot.ts', './webDataStore.ts', './monitorDataStore.ts', './sessionModel.ts', './IndexedDB.mjs_cjs=&original=.js', './eUPNG.ts', './recordToggle.ts', './sessionDialog.ts', './sessionItem.ts', './sessionList.ts', './stateMonitorGroup.ts', './targetFpsSlider.ts', './AlignFullScreenButton.ts', './AnimUtils.ts', './AntialiasConfig.ts', './ClickAndShow.ts', './CustomTiledAssembler.ts', './FloatUtils.ts', './LetterSpacing.ts', './LoadingScreen.ts', './animateNumberLabel.ts', './big.mjs_cjs=&original=.js', './gameCommonUtils.ts', './utils.ts', './AnimationCacheConfig.ts', './AudioClipDatabase.ts', './CanvasScaleByOrientation.ts', './CustomCanvasSize.ts', './CustomPageViewIndicator.ts', './CustomTypeShare.ts', './EventListenerManager.ts', './MonitorTarget.ts', './NativeSoundPlayer.ts', './ScreenOrientationControl.ts', './ScrollViewOptimise.ts', './Sound.ts', './SoundPlayerImpl.ts', './WebSoundPlayer.ts', './globalConfig.ts', './XOCypher.ts', './loadConfigAsync.ts', './serviceRest.ts', './MaterialPlatformUpdate.ts', './gfFishGroupData.ts', './gfFishGroupHelper.ts', './gfFishGroupMgr.ts', './gfFishMoveActions.ts', './gfPopupPromotion.ts', './gfPromotionGun.ts', './gfQuickHuntBtn.ts', './gfBallTray.ts', './gfDragon.ts', './gfDragonAssetsManager.ts', './gfDragonBall.ts', './gfDragonConfig.ts', './gfDragonEffectLayer.ts', './gfDragonEvent.ts', './gfDragonExtraSound.ts', './gfDragonJackpotWinPopup.ts', './gfDragonNetworkController.ts', './gfDragonNetworkEvent.ts', './gfDragonWarning.ts', './gfDragonWheel.ts', './gfJackpotDragonInfo.ts', './gfJackpotStarFX.ts', './gfMiniBoss.ts', './gfMiniBossAssetsManager.ts', './gfMiniBossConfig.ts', './gfMiniBossEffectLayer.ts', './gfMiniBossEvent.ts', './gfMiniBossExtraSound.ts', './gfMiniBossItem.ts', './gfMiniBossNetworkController.ts', './gfAnimateNumberLabel.ts', './gfAssetBundle.ts', './gfAutoFireController.ts', './gfAutoFireScheduler.ts', './gfBackgroundController.ts', './gfBubble.ts', './gfCommonRoomController.ts', './gfCurrencyCalculator.ts', './gfCustomDataType.ts', './gfCustomTiledAssembler.ts', './gfDataStore.ts', './gfEventEmitter.ts', './gfExtraNodePoolAssets.ts', './gfFishManager.ts', './gfGameScene.ts', './gfGameScheduler.ts', './gfGeneralInitialization.ts', './gfHUDController.ts', './gfLoadAllInOne.ts', './gfLoadGameByPrefabs.ts', './gfLoadingScene.ts', './gfLoadingTransition.ts', './gfLocalize.ts', './gfMainController.ts', './gfMainFSM.ts', './gfModuleBig.mjs_cjs=&original=.js', './gfNativeSoundPlayer.ts', './gfNode.ts', './gfNodePool.ts', './gfNodePoolAssets.ts', './gfNodePoolConfig.ts', './gfNotifyController.ts', './gfOverrideEngine.ts', './gfPersisNodeController.ts', './gfPoolManager.ts', './gfPopupController.ts', './gfReferenceManager.ts', './gfRoomController.ts', './gfRoundStartTime.ts', './gfSetOrientation.ts', './gfSideMenu.ts', './gfSoundBase.ts', './gfSoundController.ts', './gfWebSoundPlayer.ts', './gfBossAssetsManager.ts', './gfBossBase.ts', './gfBossConfig.ts', './gfBossController.ts', './gfBossEffectLayer.ts', './gfBossExtraNodePoolAsset.ts', './gfBossExtraSound.ts', './gfBossInterface.ts', './gfBossItem.ts', './gfBossLoader.ts', './gfBossNetworkController.ts', './gfJackpotBossInfo.ts', './gfCutSceneItem.ts', './gfCutSceneJackpotWin.ts', './gfCutSceneLayer.ts', './gfCutSceneWin.ts', './gfDecorBullet.ts', './gfDecorFish.ts', './gfDecorGun.ts', './gfDropItem.ts', './gfDropSpecialGunFX.ts', './gfExtraWheelContainer.ts', './gfWheel.ts', './gfWheelAvatar.ts', './gfWheelContainer.ts', './gfWheelController.ts', './gfEffectEvent.ts', './gfEventButton.ts', './gfEventController.ts', './gfEventItemEffect.ts', './gfEventTray.ts', './gfEventTrayController.ts', './gfEventWinWheel.ts', './gfPopupEventInfo.ts', './gfBaseFish.ts', './gfFishUpdateAngle.ts', './gfFishUpdateOutScreen.ts', './gfMoveByFourPoints.ts', './gfMoveByPoints.ts', './gfMoveByThreePoints.ts', './gfMoveByTwoPoints.ts', './gfSpineFish.ts', './gfSpriteFish.ts', './gfBaseGunSkill.ts', './gfGunSkillController.ts', './gfLaserGun.ts', './gfOneShotGunSkill.ts', './gfRifleGunSkill.ts', './gfEventHistory.ts', './gfLuckyEffect.ts', './gfLuckyFish.ts', './gfBaseCellHistory.ts', './gfBaseHistory.ts', './gfPopupJackpotHistory.ts', './gfPopupInfo.ts', './gfPopupInfoPageView.ts', './gfPopupPrompt.ts', './gfPopupSetting.ts', './gfPopupSettingSlider.ts', './gfPopuptutorial.ts', './gfBubbleTransition.ts', './gfWaveTransition.ts', './gf3DParticle.ts', './gfAutoGrayScaleButton.ts', './gfBlockAllInput.ts', './gfBlurScrollView.ts', './gfBlurScrollViewController.ts', './gfBullet.ts', './gfBulletLayer.ts', './gfCoinFX.ts', './gfCoinLabel.ts', './gfEffectLayer.ts', './gfEffectLockFish.ts', './gfExplosionAnimationClip.ts', './gfExplosionSpine.ts', './gfFishLayer.ts', './gfGameLayer.ts', './gfLaserBox.ts', './gfLayerComponent.ts', './gfLobbyLayer.ts', './gfNetFX.ts', './gfNotifyComponent.ts', './gfNotifyItemStack.ts', './gfNotifyJackpot.ts', './gfNotifyLockFish.ts', './gfNotifyMessage.ts', './gfNotifyStack.ts', './gfPlayAndDestroy.ts', './gfPlayer.ts', './gfPlayerLayer.ts', './gfPopupBase.ts', './gfResizeByEvent.ts', './gfResizeWindow.ts', './gfTouchListener.ts', './gfVersion.ts', './gfWaitingLayer.ts', './gfWallet.ts', './gfWifiStatus.ts', './gfBaseConfig.ts', './gfBaseEvents.ts', './gfAssetLangController.ts', './gfLocalizationLoader.ts', './gfLocalizeAsset.ts', './gfLocalizeButton.ts', './gfLocalizeLabel.ts', './gfLocalizeNodeAsset.ts', './gfLocalizeSpine.ts', './gfLocalizeSprite.ts', './gfNetworkEvent.ts', './gfNetworkGameEvent.ts', './gfNetworkKeyMap.ts', './gfNetworkParser.ts', './gfNetworkSocket.ts', './gfActionHelper.ts', './gfUtilities.ts', './state-machine-history.min.mjs_cjs=&original=.js', './crypto-core.ts', './hashKey.ts', './md5.ts', './sha1.ts', './sha224.ts', './sha256.ts', './sha512.ts', './x64-core.ts', './AssetBundle1975.ts', './BackgroundController1975.ts', './Config1975.ts', './CustomDataType1975.ts', './DataStore1975.ts', './EventsCode1975.ts', './FishManager1975.ts', './GeneralInitialization1975.ts', './HandleConfigFish1975.ts', './LoadingScene1975.ts', './LobbyLayer1975.ts', './MainController1975.ts', './NetworkGameEvent1975.ts', './NodePoolConfig1975.ts', './PersisNodeController1975.ts', './PoolManager1975.ts', './PortalController1975.ts', './SideMenu1975.ts', './SoundController1975.ts', './Utilities1975.ts', './WaitingLayer1975.ts', './wifiStatus1975.ts', './BossExtraSound1975.ts', './EffectLeviathan1975.ts', './ItemLeviathan1975.ts', './JackpotInfo1975.ts', './JackpotWinPopup1975.ts', './JackpotWinWheel1975.ts', './Leviathan1975.ts', './LeviathanAssetManager1975.ts', './LeviathanExplosion1975.ts', './LeviathanNetwork1975.ts', './LeviathanNetworkController1975.ts', './LeviathanWarning1975.ts', './Drill1975.ts', './EffectLayer1975.ts', './EffectLockFish1975.ts', './LightningChainEffect1975.ts', './LightningEffect1975.ts', './BombFx1975.ts', './TurtleSkillEffect1975.ts', './VortexAnimateMoney1975.ts', './VortexEffect1975.ts', './Wheel1975.ts', './HUDController1975.ts', './NotifyMessage1975.ts', './NotifyJackpot1975.ts', './Player1975.ts', './PlayerLayer1975.ts', './BoxWave1975.ts', './JoinGameTransition1975.ts', './LoadingTransition1975.ts', './WaveTransition1975.ts', './WarningSkill1975.ts', './NetFx1975.ts', './FishGroupHelper1975.ts', './FishGroupMgr1975.ts', './LfishGroup09.ts', './LfishGroup18.ts', './LfishGroup22.ts', './MultiLevelFish1975.ts', './TurtleSlotMachine1975.ts', './newFishGroup.ts', './PopupPromotion1975.ts', './PromotionGun1975.ts', './NetworkKeyMap1975.ts', './LeaderFish1975.ts', './SpineFish1975.ts', './SpriteFish1975.ts', './JackpotCellHistory1975.ts', './JackpotHistory1975.ts', './PopupInfo1975.ts', './PopupJackpotHistory1975.ts', './PopupPrompt1975.ts', './PopupSetting1975.ts', './PopupTutorial1975.ts', './appConfig-debug.ts', './appConfig.ts', './mock.ts', './state-machine.min.mjs_cjs=&original=.js'], function () {
+System.register("chunks:///_virtual/main", ['./MonoUpdate.ts', './RetryInfo.ts', './HotUpdateV2.ts', './UpdatePanelV2.ts', './HotUpdate.ts', './UpdatePanel.ts', './GameLogo.ts', './LayoutNodeInstance.ts', './Preload.ts', './BubbleFloatGames.ts', './EventList.ts', './GameEvent.ts', './GameQuest.ts', './InitSocketComponent.ts', './ItemLobby.ts', './LobbyDev.ts', './LobbyMenu.ts', './LobbyScene.ts', './LoginDev.ts', './LoginStaging.ts', './connectNetwork.ts', './game-network.mjs_cjs=&original=.js', './globalNetwork.ts', './eDupLogin.ts', './eFishNotify.ts', './eForceLobby.ts', './eSlowNetwork.ts', './eDebugStats.ts', './eFPSGraph.ts', './eHideHelper.ts', './eImageMemory.ts', './eSnapMem.ts', './eEventEmitter.ts', './MenuController.ts', './eDialog.ts', './eDialogController.ts', './eDragUI.ts', './eGraph.ts', './eGroup.ts', './eItem.ts', './eList.ts', './eMenu.ts', './eSlider.ts', './eToggle.ts', './keepAspectRatio.ts', './StateEvents.ts', './captureButton.ts', './fpsGraph.ts', './fpsRecorder.ts', './issuesRecorder.ts', './monitorController.ts', './screenshot.ts', './webDataStore.ts', './monitorDataStore.ts', './sessionModel.ts', './IndexedDB.mjs_cjs=&original=.js', './eUPNG.ts', './recordToggle.ts', './sessionDialog.ts', './sessionItem.ts', './sessionList.ts', './stateMonitorGroup.ts', './targetFpsSlider.ts', './AlignFullScreenButton.ts', './AnimUtils.ts', './AntialiasConfig.ts', './ClickAndShow.ts', './CustomTiledAssembler.ts', './FloatUtils.ts', './LetterSpacing.ts', './LoadingScreen.ts', './animateNumberLabel.ts', './big.mjs_cjs=&original=.js', './gameCommonUtils.ts', './utils.ts', './AnimationCacheConfig.ts', './AudioClipDatabase.ts', './CanvasScaleByOrientation.ts', './CustomCanvasSize.ts', './CustomPageViewIndicator.ts', './CustomTypeShare.ts', './EventListenerManager.ts', './MonitorTarget.ts', './NativeSoundPlayer.ts', './ScreenOrientationControl.ts', './ScrollViewOptimise.ts', './Sound.ts', './SoundPlayerImpl.ts', './WebSoundPlayer.ts', './globalConfig.ts', './XOCypher.ts', './loadConfigAsync.ts', './serviceRest.ts', './MaterialPlatformUpdate.ts', './gfFishGroupData.ts', './gfFishGroupHelper.ts', './gfFishGroupMgr.ts', './gfFishMoveActions.ts', './gfPopupPromotion.ts', './gfPromotionGun.ts', './gfQuickHuntBtn.ts', './gfBallTray.ts', './gfDragon.ts', './gfDragonAssetsManager.ts', './gfDragonBall.ts', './gfDragonConfig.ts', './gfDragonEffectLayer.ts', './gfDragonEvent.ts', './gfDragonExtraSound.ts', './gfDragonJackpotWinPopup.ts', './gfDragonNetworkController.ts', './gfDragonNetworkEvent.ts', './gfDragonWarning.ts', './gfDragonWheel.ts', './gfJackpotDragonInfo.ts', './gfJackpotStarFX.ts', './gfMiniBoss.ts', './gfMiniBossAssetsManager.ts', './gfMiniBossConfig.ts', './gfMiniBossEffectLayer.ts', './gfMiniBossEvent.ts', './gfMiniBossExtraSound.ts', './gfMiniBossItem.ts', './gfMiniBossNetworkController.ts', './gfAnimateNumberLabel.ts', './gfAssetBundle.ts', './gfAutoFireController.ts', './gfAutoFireScheduler.ts', './gfBackgroundController.ts', './gfBubble.ts', './gfCommonRoomController.ts', './gfCurrencyCalculator.ts', './gfCustomDataType.ts', './gfCustomTiledAssembler.ts', './gfDataStore.ts', './gfEventEmitter.ts', './gfExtraNodePoolAssets.ts', './gfFishManager.ts', './gfGameScene.ts', './gfGameScheduler.ts', './gfGeneralInitialization.ts', './gfHUDController.ts', './gfLoadAllInOne.ts', './gfLoadGameByPrefabs.ts', './gfLoadingScene.ts', './gfLoadingTransition.ts', './gfLocalize.ts', './gfMainController.ts', './gfMainFSM.ts', './gfModuleBig.mjs_cjs=&original=.js', './gfNativeSoundPlayer.ts', './gfNode.ts', './gfNodePool.ts', './gfNodePoolAssets.ts', './gfNodePoolConfig.ts', './gfNotifyController.ts', './gfOverrideEngine.ts', './gfPersisNodeController.ts', './gfPoolManager.ts', './gfPopupController.ts', './gfReferenceManager.ts', './gfRoomController.ts', './gfRoundStartTime.ts', './gfSetOrientation.ts', './gfSideMenu.ts', './gfSoundBase.ts', './gfSoundController.ts', './gfWebSoundPlayer.ts', './gfBossAssetsManager.ts', './gfBossBase.ts', './gfBossConfig.ts', './gfBossController.ts', './gfBossEffectLayer.ts', './gfBossExtraNodePoolAsset.ts', './gfBossExtraSound.ts', './gfBossInterface.ts', './gfBossItem.ts', './gfBossLoader.ts', './gfBossNetworkController.ts', './gfJackpotBossInfo.ts', './gfCutSceneItem.ts', './gfCutSceneJackpotWin.ts', './gfCutSceneLayer.ts', './gfCutSceneWin.ts', './gfDecorBullet.ts', './gfDecorFish.ts', './gfDecorGun.ts', './gfDropItem.ts', './gfDropSpecialGunFX.ts', './gfExtraWheelContainer.ts', './gfWheel.ts', './gfWheelAvatar.ts', './gfWheelContainer.ts', './gfWheelController.ts', './gfEffectEvent.ts', './gfEventButton.ts', './gfEventController.ts', './gfEventItemEffect.ts', './gfEventTray.ts', './gfEventTrayController.ts', './gfEventWinWheel.ts', './gfPopupEventInfo.ts', './gfBaseFish.ts', './gfFishUpdateAngle.ts', './gfFishUpdateOutScreen.ts', './gfMoveByFourPoints.ts', './gfMoveByPoints.ts', './gfMoveByThreePoints.ts', './gfMoveByTwoPoints.ts', './gfSpineFish.ts', './gfSpriteFish.ts', './gfBaseGunSkill.ts', './gfGunSkillController.ts', './gfLaserGun.ts', './gfOneShotGunSkill.ts', './gfRifleGunSkill.ts', './gfEventHistory.ts', './gfLuckyEffect.ts', './gfLuckyFish.ts', './gfBaseCellHistory.ts', './gfBaseHistory.ts', './gfPopupJackpotHistory.ts', './gfPopupInfo.ts', './gfPopupInfoPageView.ts', './gfPopupPrompt.ts', './gfPopupSetting.ts', './gfPopupSettingSlider.ts', './gfPopuptutorial.ts', './gfBubbleTransition.ts', './gfWaveTransition.ts', './gf3DParticle.ts', './gfAutoGrayScaleButton.ts', './gfBlockAllInput.ts', './gfBlurScrollView.ts', './gfBlurScrollViewController.ts', './gfBullet.ts', './gfBulletLayer.ts', './gfCoinFX.ts', './gfCoinLabel.ts', './gfEffectLayer.ts', './gfEffectLockFish.ts', './gfExplosionAnimationClip.ts', './gfExplosionSpine.ts', './gfFishLayer.ts', './gfGameLayer.ts', './gfLaserBox.ts', './gfLayerComponent.ts', './gfLobbyLayer.ts', './gfNetFX.ts', './gfNotifyComponent.ts', './gfNotifyItemStack.ts', './gfNotifyJackpot.ts', './gfNotifyLockFish.ts', './gfNotifyMessage.ts', './gfNotifyStack.ts', './gfPlayAndDestroy.ts', './gfPlayer.ts', './gfPlayerLayer.ts', './gfPopupBase.ts', './gfResizeByEvent.ts', './gfResizeWindow.ts', './gfTouchListener.ts', './gfVersion.ts', './gfWaitingLayer.ts', './gfWallet.ts', './gfWifiStatus.ts', './gfBaseConfig.ts', './gfBaseEvents.ts', './gfAssetLangController.ts', './gfLocalizationLoader.ts', './gfLocalizeAsset.ts', './gfLocalizeButton.ts', './gfLocalizeLabel.ts', './gfLocalizeNodeAsset.ts', './gfLocalizeSpine.ts', './gfLocalizeSprite.ts', './gfNetworkEvent.ts', './gfNetworkGameEvent.ts', './gfNetworkKeyMap.ts', './gfNetworkParser.ts', './gfNetworkSocket.ts', './gfActionHelper.ts', './gfUtilities.ts', './state-machine-history.min.mjs_cjs=&original=.js', './crypto-core.ts', './hashKey.ts', './md5.ts', './sha1.ts', './sha224.ts', './sha256.ts', './sha512.ts', './x64-core.ts', './AssetBundle1975.ts', './BackgroundController1975.ts', './Config1975.ts', './CustomDataType1975.ts', './DataStore1975.ts', './EventsCode1975.ts', './FishManager1975.ts', './GeneralInitialization1975.ts', './HandleConfigFish1975.ts', './LoadingScene1975.ts', './LobbyLayer1975.ts', './MainController1975.ts', './NetworkGameEvent1975.ts', './NodePoolConfig1975.ts', './PersisNodeController1975.ts', './PoolManager1975.ts', './PortalController1975.ts', './SideMenu1975.ts', './SoundController1975.ts', './Utilities1975.ts', './WaitingLayer1975.ts', './wifiStatus1975.ts', './BossExtraSound1975.ts', './EffectLeviathan1975.ts', './ItemLeviathan1975.ts', './JackpotInfo1975.ts', './JackpotWinPopup1975.ts', './JackpotWinWheel1975.ts', './Leviathan1975.ts', './LeviathanAssetManager1975.ts', './LeviathanExplosion1975.ts', './LeviathanNetwork1975.ts', './LeviathanNetworkController1975.ts', './LeviathanWarning1975.ts', './Drill1975.ts', './EffectLayer1975.ts', './EffectLockFish1975.ts', './LightningChainEffect1975.ts', './LightningEffect1975.ts', './BombFx1975.ts', './TurtleSkillEffect1975.ts', './VortexAnimateMoney1975.ts', './VortexEffect1975.ts', './Wheel1975.ts', './HUDController1975.ts', './NotifyMessage1975.ts', './NotifyJackpot1975.ts', './Player1975.ts', './PlayerLayer1975.ts', './BoxWave1975.ts', './JoinGameTransition1975.ts', './LoadingTransition1975.ts', './WaveTransition1975.ts', './WarningSkill1975.ts', './NetFx1975.ts', './FishGroupHelper1975.ts', './FishGroupMgr1975.ts', './LfishGroup09.ts', './LfishGroup18.ts', './LfishGroup22.ts', './MultiLevelFish1975.ts', './TurtleSlotMachine1975.ts', './newFishGroup.ts', './PopupPromotion1975.ts', './PromotionGun1975.ts', './NetworkKeyMap1975.ts', './LeaderFish1975.ts', './SpineFish1975.ts', './SpriteFish1975.ts', './JackpotCellHistory1975.ts', './JackpotHistory1975.ts', './PopupInfo1975.ts', './PopupJackpotHistory1975.ts', './PopupPrompt1975.ts', './PopupSetting1975.ts', './PopupTutorial1975.ts', './appConfig-debug.ts', './appConfig.ts', './mock.ts', './state-machine.min.mjs_cjs=&original=.js', './debug-view-runtime-control.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
@@ -60875,8 +60629,8 @@ System.register("chunks:///_virtual/MonitorTarget.ts", ['./rollupPluginModLoBabe
   };
 });
 
-System.register("chunks:///_virtual/MonoUpdate.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './RetryInfo.ts', './jbs_runtime_md5.ts', './loadConfigAsync.ts', './gameCommonUtils.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Asset, Node, Label, ProgressBar, _decorator, Component, sys, game, director, RetryInfo, jbs_runtime_md5, loadConfigAsync, gameCommonUtils;
+System.register("chunks:///_virtual/MonoUpdate.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './RetryInfo.ts', './loadConfigAsync.ts', './gameCommonUtils.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Asset, Node, Label, ProgressBar, _decorator, Component, sys, game, director, RetryInfo, loadConfigAsync, gameCommonUtils;
 
   return {
     setters: [function (module) {
@@ -60895,8 +60649,6 @@ System.register("chunks:///_virtual/MonoUpdate.ts", ['./rollupPluginModLoBabelHe
       director = module.director;
     }, function (module) {
       RetryInfo = module.default;
-    }, function (module) {
-      jbs_runtime_md5 = module.default;
     }, function (module) {
       loadConfigAsync = module.default;
     }, function (module) {
@@ -61531,13 +61283,25 @@ System.register("chunks:///_virtual/MonoUpdate.ts", ['./rollupPluginModLoBabelHe
         }
 
         _verifyFileHandle(path, asset) {
-          // When asset is compressed, we don't need to check its md5, because zip file have been deleted.
-          if (asset.compressed) {
-            return true;
-          }
+          let compressed = asset.compressed;
+          let relativePath = asset.path;
+          let size = asset.size;
 
-          let resMD5 = jbs_runtime_md5(jsb.fileUtils.getDataFromFile(path));
-          return asset.md5 == resMD5;
+          if (compressed) {
+            LOG_UPDATE(`Verification passed: ${relativePath}`);
+            return true;
+          } else {
+            //TODO implement md5 content, it's too lagging
+            let fileSize = jsb.fileUtils.getFileSize(path);
+
+            if (size == fileSize) {
+              LOG_UPDATE(`Verification passed: ${relativePath}`);
+              return true;
+            }
+
+            LOG_UPDATE(`Verification failed: ${relativePath} ${size}/${fileSize}`);
+            return false;
+          }
         }
 
         onUpdateComplete() {
